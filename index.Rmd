@@ -1,0 +1,304 @@
+---
+title: "AFDMD-111 Estadística"
+author: "Cristhian Jhovany Gutierrez Jimenez"
+date: "18/10/2023"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+    cards: no
+subtitle: Distribuciones de probabilidad
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Distribuciones discretas de probabilidad
+
+Las distribuciones probabilidad se pueden clasificar en dos tipos importantes:
+
+- Distribuciones discretas.
+- Distribuciones continuas.
+
+
+### Distribución de Bernoulli
+
+Entre las distribuciones de probabilidad discretas podemos mencionar a la distribución de Bernoulli, la cual tiene la siguiente forma matemática:
+
+$$
+p(k) = p^k(1-p)^{1-k}, \; \mbox{para} \; k\in (0,1)
+$$
+
+
+En `R`, podemos simular muestras de la distribución de Bernoulli mediante el comando:
+
+```{r}
+# Sacamos una muestra de 30 datos Bernoulli y graficamos
+datos <- rbinom(n=30, size=1, prob=0.3)
+plot(datos, type="h", main="Datos de dist de Bernoulli")
+points(datos)
+```
+En este caso size representa a $n$ que es igual a $1$. Otra distribución discreta importante es la Binomial (la de Bernoulli es un caso especial de ésta).
+
+### Distribución Binomial
+
+La distribución binomial representa el número de éxitos en $n$ intentos, mientras que la de Bernoulli, representa éxito o fracaso, la fórmula que representa a la distribución Binomial está dada por:
+
+$$
+Pr(X=k) = {n\choose k} p^k(1-p)^{n-k}
+$$
+En `R` podemos simular a la distribución Binomial como:
+```{r binomial}
+datos <- rbinom(30, size=20, prob=0.6)
+plot(datos, type="h", main= "Distribución binomial")
+points(datos)
+```
+y si hacemos la probabilidad más pequeña ($p=0.1$), tenemos;
+
+```{r binomial2}
+datos <- rbinom(30, size=20, prob=0.1)
+plot(datos, type="h", main= "Distribución binomial")
+points(datos)
+```
+
+### Tarea
+
+Investigar las siguiente distribuciones discretas y verificar cómo se pueden generar en `R` (Nota: no es necesario generarlos en `R`, es opcional).
+
+- Distribución de Poison.
+- Distribución Geométrica.
+- Distribución Uniforme discreta.
+- Distribución Hipergeométrica.
+
+### Distribución de Poison
+
+La distribución de Poisson es una distribución de probabilidad discreta que se aplica a las ocurrencias de algún evento durante un periodo determinado osea que una distribución de probabilidad discreta en la que solo es necesario conocer los eventos y cuál es su frecuencia media de ocurrencia para poder conocer la probabilidad de que ocurran.
+Una distribución es discreta cuando se toma un número de valor finito, mientras que las continuas usan un número infinito de valores.
+
+$$
+Pr(X=k) = \frac{e^{−λ}*{λ^k}} 
+{k!}
+$$
+```{r}
+lambda <- 2  # Tasa media de ocurrencia de eventos
+
+# Generar datos aleatorios con distribución de Poisson
+datos_aleatorios <- rpois(1000, lambda)
+
+# Visualizar el histograma de los datos generados
+hist(datos_aleatorios, breaks = 20, col = "lightblue", main = "Distribución de Poisson",
+     xlab = "Número de Eventos", ylab = "Frecuencia")
+```
+
+### Distribución de Geometrica
+
+La distribución geométrica es un modelo adecuado para aquellos procesos en los que se repiten pruebas hasta la consecución del éxito a resultado deseado
+Esta distribución se puede hacer derivar de un proceso experimental puro o de Bernouilli en el que tengamos las siguientes características
+
+· El proceso consta de un número no definido de pruebas o experimentos separados o separables. El proceso concluirá cuando se obtenga por primera vez el resultado deseado (éxito).
+
+· Cada prueba puede dar dos resultados mutuamente excluyentes : A y no A
+
+· La probabilidad de obtener un resultado A en cada prueba es p y la de obtener un resultado no A es q
+siendo (p + q = 1).
+
+Las probabilidades p y q son constantes en todas las pruebas ,por tanto , las pruebas ,son independientes (si se trata de un proceso de "extracción" éste se llevará a , cabo con devolución del individuo extraído) .
+
+· (Derivación de la distribución). Si en estas circunstancias aleatorizamos de forma que tomemos como variable aleatoria X = el número de pruebas necesarias para obtener por primera vez un éxito o resultado A , esta variable se distribuirá con una distribución geométrica de parámetro p.
+
+$$
+Pr(X=k) = (1-p)^{k-1}*p
+$$
+```{r}
+# Parámetros
+p <- 0.2  # Probabilidad de éxito en un solo ensayo de Bernoulli
+
+# Generar datos aleatorios con distribución geométrica
+datos_aleatorios <- rgeom(1000, prob = p)
+
+# Visualizar el histograma de los datos generados
+hist(datos_aleatorios, breaks = 20, col = "lightgreen", main = "Distribución Geométrica",
+     xlab = "Número de Ensayos hasta el Primer Éxito", ylab = "Frecuencia")
+```
+
+
+### Distribución Uniforme discreta
+
+La distribución uniforme discreta es una distribución de probabilidad discreta en la cual todos los valores son equiprobables, es decir, en una distribución uniforme discreta todos los valores tienen la misma probabilidad de ocurrir.
+
+$$
+Pr(X=k) = \frac{1}{n} = \frac{1}{b-a+1}
+$$
+```{r}
+# Parámetros
+n <- 6  # Número total de valores posibles
+
+# Generar datos aleatorios con distribución uniforme discreta
+datos_aleatorios <- round(runif(1000, min = 1, max = n))
+
+# Visualizar el histograma de los datos generados
+hist(datos_aleatorios, breaks = seq(0.5, n + 0.5, by = 1), col = "lightblue", 
+     main = "Simulación de Distribución Uniforme Discreta",
+     xlab = "Valores Posibles", ylab = "Frecuencia")
+
+```
+
+### Distribución Hipergeometrica
+La distribución hipergeométrica es una distribución discreta que modela el número de eventos en una muestra de tamaño fijo cuando usted conoce el número total de elementos en la población de la cual proviene la muestra. Cada elemento de la muestra tiene dos resultados posibles (es un evento o un no evento). Las muestras no tienen reemplazo, por lo que cada elemento de la muestra es diferente. Cuando se elige un elemento de la población, no se puede volver a elegir. Por lo tanto, la probabilidad de que un elemento sea seleccionado aumenta con cada ensayo, presuponiendo que aún no haya sido seleccionado.
+
+
+```{r}
+# Parámetros
+N <- 100  # Tamaño de la población total
+K <- 30   # Número total de éxitos en la población
+n <- 10   # Tamaño de la muestra
+
+# Calcular la PMF para k=0,1,...,n
+k_values <- 0:n
+probabilities <- dhyper(k_values, m = K, n = N - K, k = n)
+
+# Gráfico de la distribución hipergeométrica
+barplot(probabilities, names.arg = k_values, col = "lightgreen",
+        main = "Distribución Hipergeométrica",
+        xlab = "Número de Éxitos en la Muestra", ylab = "Probabilidad")
+
+```
+
+
+
+## Distribuciones continuas
+
+En probabilidad los datos pueden ser continuos y discretos, cuando son discretos los modelamos mediante distribuciones discretas mientras si los datos tienen un continuo de valores, entonces se tienen que modelar mediante distribuciones de probabilidad continuas. Un ejemplo clásico de distribución continua es la distribución normal o Gaussiana. Las distribuciones continuas igual se representan mediante ecuaciones y en esto caso pueden ser representados por funciones llamadas PDFs o CDFs. A continuación definimos algunas de ellas.
+Por ejemplo, el lanzamiento de un dado se puede definir con una distribución uniforme discreta, ya que todos los posibles resultados (1, 2, 3, 4, 5 o 6) tienen la misma probabilidad de ocurrencia.
+
+En general, una distribución uniforme discreta tiene dos parámetros característicos, a y b, que definen el intervalo de los posibles valores que puede tomar la distribución. Así pues, cuando una variable está definida por una distribución uniforme discreta, se escribe Uniforme(a,b).
+
+
+### Distribución Gaussiana o normal
+
+Se dice que los datos son Gaussianos cuando éstos vinieron de una distribución Gaussiana, la cual tiene la siguiente forma:
+
+$$
+f(x) = \frac{1}{\sqrt{2\pi \sigma^2}}\mbox{e}^{\frac{-(x-\mu)^2}{2\sigma^2}}
+$$
+
+En `R` esta distribución de puede simular como:
+
+```{r}
+datos <- rnorm(100,mean=0, sd=1)
+plot(datos, type="l", main="Datos Gaussianos")
+```
+Existen muchas otras distribuciones continuas y el objetivo de ellas es adecuar nuestros datos a una de ellas con el objetivo de simular situaciones con valores tomados de ellas.
+
+
+### Tarea
+
+Investigar las siguientes distribuciones continuas de probabilidad (pueden incorporar el código en `R` que las genera aunque es opcional).
+
+- Distribución uniforme continua.
+- Distribución exponencial.
+- Distribución Rayleigh
+- Distribución Gamma.
+
+### Distribución uniforme continua
+
+La distribución uniforme continua es un tipo de distribución de probabilidad en la cual todos los valores tienen la misma probabilidad de ocurrencia. Es decir, la distribución uniforme continua es una distribución en la que la probabilidad se distribuye uniformemente a lo largo de un intervalo.
+La distribución uniforme continua se utiliza para describir variables continuas que tienen una probabilidad constante. Asimismo, la distribución uniforme continua se usa para definir procesos aleatorios, ya que si todos los resultados tienen la misma probabilidad significa que existe aleatoriedad en el resultado.
+
+La función de densidad de probabilidad de la distribución uniforme continua en el intervalo [a,b]
+[a,b] se define como:
+$$
+f(x) = \frac{1}{b-a}
+$$
+
+```{r}
+# Parámetros
+a <- 0  # Extremo inferior del intervalo
+b <- 1  # Extremo superior del intervalo
+
+# Generar datos aleatorios con distribución uniforme continua
+datos_aleatorios <- runif(1000, min = a, max = b)
+
+# Visualizar el histograma de los datos generados
+hist(datos_aleatorios, breaks = 20, col = "lightblue",
+     main = "Distribución Uniforme Continua",
+     xlab = "Valores Aleatorios", ylab = "Frecuencia")
+```
+
+### Distribución exponencial
+
+La distribución exponencial a menudo se refiere a la cantidad de tiempo hasta que ocurre algún evento específico. Por ejemplo, la cantidad de tiempo (comenzando ahora) hasta que ocurra un sismo tiene una distribución exponencial. Otros ejemplos incluyen el tiempo, en minutos, de las llamadas telefónicas de negocios de larga distancia, y la cantidad de tiempo, en meses, que dura la batería de un automóvil. Se puede demostrar, también, que el valor del cambio que tienes en tu bolsillo o bolso aproximadamente sigue una distribución exponencial.
+Los valores para una variable aleatoria exponencial ocurren de la siguiente manera. Hay menos valores grandes y más valores pequeños. Por ejemplo, estudios de mercadotecnia han demostrado que la cantidad de dinero que los clientes gastan en un viaje al supermercado sigue una distribución exponencial. Hay más gente que gasta pequeñas cantidades de dinero y menos gente que gasta grandes cantidades de dinero.
+Las distribuciones exponenciales se utilizan comúnmente en los cálculos de la confiabilidad del producto, o el tiempo que dura un producto.
+
+$$
+f(x) = \frac{1}{μ}e^{-\frac{1}{μ}x}
+$$
+
+```{r}
+# Parámetro
+lambda <- 0.5  # Parámetro de tasa
+
+# Generar valores para la variable aleatoria continua x
+x_values <- seq(0, 5, by = 0.1)
+
+# Calcular la PDF y la CDF para los valores de x
+pdf_exponencial <- dexp(x_values, rate = lambda)
+cdf_exponencial <- pexp(x_values, rate = lambda)
+
+# Crear gráfico de la PDF
+plot(x_values, pdf_exponencial, type = "l", lwd = 2, col = "blue",
+     main = "Distribución Exponencial",
+     xlab = "x", ylab = "Densidad de Probabilidad")
+
+# Agregar gráfico de la CDF
+lines(x_values, cdf_exponencial, type = "l", lwd = 2, col = "red")
+
+# Leyenda
+legend("topright", legend = c("PDF", "CDF"), col = c("blue", "red"), lwd = 2)
+```
+
+### Distribución Rayleigh
+En la función de distribución de Weibull tenemos que determinar los parámetros c y k, por lo que es necesario recoger los datos de la velocidad del viento en cortos intervalos de tiempo. Si disponemos solamente de la velocidad media del viento en un periodo largo de tiempo, en un día, una semana, un mes... es más adecuado utilizar la distribución de Rayleigh.
+
+$$
+f(x) = \frac{2x}{b^2}exp(-\frac{x^2}{b^2})
+$$
+
+### Distribución Gamma
+Utilice la distribución gamma para modelar valores de datos positivos que sean asimétricos a la derecha y mayores que 0. La distribución gamma se utiliza comúnmente en estudios de supervivencia de fiabilidad. Por ejemplo, la distribución gamma puede describir el tiempo que transcurre para que falle un componente eléctrico. La mayoría de los componentes eléctricos de un tipo particular fallará aproximadamente en el mismo momento, pero unos pocos tardarán más en fallar.
+La distribución gamma es una distribución continua que se define por sus parámetros de forma y escala. La distribución gamma de 3 parámetros se define por sus parámetros de forma, escala y valor umbral.
+
+$$
+f(x) = \frac{{x^{a-1}}e^{-\frac{x}{β}}} {β^a Γ(a)}
+$$
+
+```{r}
+# Parámetros de la distribución Gamma
+k <- 2    # Parámetro de forma
+theta <- 1 # Parámetro de escala
+
+# Valores de x para graficar
+x_values <- seq(0, 10, by = 0.1)
+
+# PDF de la distribución Gamma
+pdf_gamma <- dgamma(x_values, shape = k, scale = theta)
+
+# CDF de la distribución Gamma
+cdf_gamma <- pgamma(x_values, shape = k, scale = theta)
+
+# Crear gráfico de la PDF
+plot(x_values, pdf_gamma, type = "l", lwd = 2, col = "blue",
+     main = "Distribución Gamma",
+     xlab = "x", ylab = "Densidad de Probabilidad")
+
+# Agregar gráfico de la CDF
+lines(x_values, cdf_gamma, type = "l", lwd = 2, col = "red")
+
+# Leyenda
+legend("topright", legend = c("PDF", "CDF"), col = c("blue", "red"), lwd = 2)
+
+```
+
+La tarea se debe entregar el día Miércoles 18 de octubre de 2023.
+Atte. Dr. Julio César Ramírez Pacheco.
